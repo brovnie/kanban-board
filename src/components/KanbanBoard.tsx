@@ -15,8 +15,8 @@ export const KanbanBoard = () => {
   };
 
   const deleteColumn = (id: Id) => {
-    const filteredColumn = columns.filter((col) => col.id !== id);
-    setColumns(filteredColumn);
+    const filteredColumns = columns.filter((col) => col.id !== id);
+    setColumns(filteredColumns);
   };
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-9">
