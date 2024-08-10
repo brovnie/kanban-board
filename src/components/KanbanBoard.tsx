@@ -23,7 +23,11 @@ export const KanbanBoard = () => {
       <div className="m-auto flex gap-4">
         <div className="flex gap-4">
           {columns.map((col) => (
-            <ColumnContainer column={col} deleteColumn={deleteColumn} />
+            <ColumnContainer
+              key={col.id}
+              column={col}
+              deleteColumn={deleteColumn}
+            />
           ))}
         </div>
         <button
