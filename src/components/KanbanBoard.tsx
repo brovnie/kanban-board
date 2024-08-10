@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { PlusIcon } from './icons/PlusIcon';
-import { Column, Id } from '../types';
-import { v4 } from 'uuid';
-import { ColumnContainer } from './ColumnContainer';
+import { useMemo, useState } from "react";
+import { PlusIcon } from "./icons/PlusIcon";
+import { Column, Id } from "../types";
+import { v4 } from "uuid";
+import { ColumnContainer } from "./ColumnContainer";
+import { DndContext } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
+
 export const KanbanBoard = () => {
   const [columns, setColumns] = useState<Column[]>([]);
-  console.log(columns);
+  const columnsId = useMemo(() => {
+    return columns.map((col) => col.id);
+  }, [columns]);
   const createNewColumn = () => {
     const columnToAdd: Column = {
       id: v4(),
@@ -20,24 +25,25 @@ export const KanbanBoard = () => {
   };
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-9">
-      <div className="m-auto flex gap-4">
-        <div className="flex gap-4">
-          {columns.map((col) => (
-            <ColumnContainer
-              key={col.id}
-              column={col}
-              deleteColumn={deleteColumn}
-            />
-          ))}
+      <DndContext>
+        <div className="m-auto flex gap-4">
+          <div className="flex gap-4">
+            <SortableContext items={columnsId}>
+              {columns.map((col) => (
+                <ColumnContainer key={col.id} column={col} deleteColumn={deleteColumn} />
+              ))}
+            </SortableContext>
+          </div>
+
+          <button
+            className="h-14 w-80 cursor-pointer leading-none rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor px-4 ring-rose-500 hover:ring-2 flex gap-2 items-center text-base"
+            onClick={() => createNewColumn()}
+          >
+            <PlusIcon />
+            Add Column
+          </button>
         </div>
-        <button
-          className="h-14 w-80 cursor-pointer leading-none rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor px-4 ring-rose-500 hover:ring-2 flex gap-2 items-center text-base"
-          onClick={() => createNewColumn()}
-        >
-          <PlusIcon />
-          Add Column
-        </button>
-      </div>
+      </DndContext>
     </div>
   );
 };
