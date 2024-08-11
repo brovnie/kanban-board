@@ -6,6 +6,7 @@ import { ColumnContainer } from "./ColumnContainer";
 import {
   DndContext,
   DragEndEvent,
+  DragOverEvent,
   DragOverlay,
   DragStartEvent,
   PointerSensor,
@@ -76,6 +77,8 @@ export const KanbanBoard = () => {
     }
   };
   const onDragEnd = (event: DragEndEvent) => {
+    setActiveColumn(null);
+    setActiveTask(null);
     const { active, over } = event;
     if (!over) return;
     const activeColumnId = active.id;
@@ -87,6 +90,41 @@ export const KanbanBoard = () => {
       return arrayMove(columns, activeColumnIndex, overColumnIndex);
     });
   };
+  const onDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = active.id;
+    const overId = over.id;
+    if (activeId === overId) return;
+
+    const isActiveTask = active.data.current?.type === "Task";
+    const isOverATask = over.data.current?.type === "Task";
+
+    if (!activeTask) return;
+
+    if (isActiveTask && isOverATask) {
+      setTasks((tasks) => {
+        const activeIndex = tasks.findIndex((task) => task.id === activeId);
+        const overIndex = tasks.findIndex((task) => task.id === overId);
+        //update column if colums are different
+        tasks[activeIndex].columnId = tasks[overIndex].columnId;
+
+        return arrayMove(tasks, activeIndex, overIndex);
+      });
+
+      const isOverAColumn = over.data.current?.type === "Column";
+      if (isActiveTask && isOverAColumn) {
+        setTasks((tasks) => {
+          const activeIndex = tasks.findIndex((task) => task.id === activeId);
+
+          //update column if colums are different
+          tasks[activeIndex].columnId = overId;
+
+          return arrayMove(tasks, activeIndex, activeIndex);
+        });
+      }
+    }
+  };
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -97,7 +135,12 @@ export const KanbanBoard = () => {
 
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-9">
-      <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <DndContext
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+      >
         <div className="m-auto flex gap-4">
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
