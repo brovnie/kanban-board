@@ -29,7 +29,13 @@ export const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
     setEditMode((prev) => !prev);
     setMouseIsOver(false);
   };
-
+  if (isDragging) {
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative bg-mainBackgroundColor h-24 min-h-24 p-2 ring-0 items-center flex text-left rounded-xl cursor-grab opacity-50 border-2 border-rose-500"
+    ></div>;
+  }
   if (editMode) {
     return (
       <div
