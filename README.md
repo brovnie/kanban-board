@@ -4,8 +4,6 @@
 
 Kanban board - project where user can add column and tasks. Tasks are assigned to specific column. Kanban was build with drag and drop functionality.
 
-## React + TypeScript + Vite
-
 ## Technology used
 
 - React
@@ -13,3 +11,7 @@ Kanban board - project where user can add column and tasks. Tasks are assigned t
 - Vite
 - Tailwind
 - @dnd-kit
+
+## How to start
+
+Run `npm run dev `
