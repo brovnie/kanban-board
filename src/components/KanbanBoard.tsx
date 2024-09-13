@@ -16,6 +16,7 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import { TaskCard } from "./TaskCard";
+import { ColumnPlaceholder } from "./ColumnPlaceholder";
 
 export const KanbanBoard = () => {
   const [columns, setColumns] = useState<Column[]>([]);
@@ -36,6 +37,8 @@ export const KanbanBoard = () => {
   const deleteColumn = (id: Id) => {
     const filteredColumns = columns.filter((col) => col.id !== id);
     setColumns(filteredColumns);
+    const newTasks = tasks.filter((task) => task.columnId !== id);
+    setTasks(newTasks);
   };
   const updateColumn = (id: Id, title: string) => {
     const newColumns = columns.map((col) => {
